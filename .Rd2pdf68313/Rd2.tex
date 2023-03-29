@@ -1,0 +1,43 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `iNEXT.UniFrac'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {iNEXT.UniFrac: Interpolation and Extrapolation for UniFrac based on dissimilarity measure}}}{}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Interpolation and Extrapolation for UniFrac based on dissimilarity measure}
+\item[Version]\AsIs{0.1.0}
+\item[Author]\AsIs{YaYun Teng}
+\item[Maintainer]\AsIs{YaYun Teng }\email{jewel860911@gmail.com}\AsIs{}
+\item[Description]\AsIs{iNEXT.UniFrac provides the function to calculate UniFrac for multiple assemblages.}
+\item[Depends]\AsIs{R (>= 4.0)}
+\item[Imports]\AsIs{tidyverse,
+magrittr,
+tidyr,
+ggplot2,
+abind,
+ape,
+ade4,
+phytools,
+phyclust,
+tidytree,
+colorRamps,
+future.apply,
+iNEXT.3D,
+iNEXT.beta3D}
+\item[Remotes]\AsIs{AnneChao/iNEXT.beta3D}
+\item[Encoding]\AsIs{UTF-8}
+\item[LazyData]\AsIs{true}
+\end{description}
+\Rdcontents{\R{} topics documented:}

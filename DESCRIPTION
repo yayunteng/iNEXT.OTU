@@ -1,11 +1,26 @@
 Package: iNEXT.UniFrac
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Interpolation and Extrapolation for UniFrac based on dissimilarity measure
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: YaYun Teng
+Maintainer: YaYun Teng <jewel860911@gmail.com>
+Description: iNEXT.UniFrac provides the function to calculate UniFrac for multiple assemblages.
+Depends: R (>= 4.0)
+Imports: tidyverse,
+         magrittr,
+         tidyr,
+         ggplot2,
+         abind,
+         ape,
+         ade4,
+         phytools,
+         phyclust,
+         tidytree,
+         colorRamps,
+         future.apply,
+         iNEXT.3D,
+         iNEXT.beta3D
+Remotes: AnneChao/iNEXT.beta3D
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 7.2.3
