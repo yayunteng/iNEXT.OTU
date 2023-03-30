@@ -166,12 +166,12 @@ distance standardized by sample coverage. (Here we only show the first six rows 
 data("tongue_cheek")
 data("tongue_cheek_tree")
 
-out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 0, 
+out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10, 
                             PDtree = tongue_cheek_tree, PDreftime = NULL)
 ```
 
 ```{r echo=FALSE}
-out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 0, 
+out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10, 
                             PDtree = tongue_cheek_tree, PDreftime = NULL)
 lapply(out$Region_1, function(x) {
     tmp = x[1:6,]
@@ -225,7 +225,7 @@ ggiNEXTUniFrac(output, scale = "fixed", transp = 0.4)
 The `ggiNEXTUniFrac()` function is a wrapper around the `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so it can be manipulated using the `ggplot2` tools.
 
 ```{r eval=FALSE}
-out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 0, 
+out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10, 
                    PDtree = tongue_cheek_tree, PDreftime = NULL)
 ggiNEXTUniFrac(out)
 ```
