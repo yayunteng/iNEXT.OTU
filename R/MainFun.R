@@ -88,7 +88,7 @@ iNEXTUniFrac = function(data, q=c(0,1,2), level = NULL, nboot = 10, conf = 0.95,
 #' @export
 ggiNEXTUniFrac = function(output, scale = "fixed", transp = 0.4){
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", "#330066", "#CC79A7", "#0072B2", "#D55E00"))
-  ylab = "UniFrac"
+  ylab = "UniFrac distance"
 
     # if (type == 'B'){
     #
