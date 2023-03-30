@@ -1,12 +1,12 @@
-#' function to calculate UniFrac based on dissimilarity measure
+#' function to calculate UniFrac distance based on dissimilarity measure
 #'
-#' \code{iNEXTUniFrac}: function to calculate UniFrac based on Sørensen- and Jaccard-type dissimilarity measure
+#' \code{iNEXTUniFrac}: function to calculate UniFrac distance based on Sørensen- and Jaccard-type dissimilarity measure
 #'
 #' @param data OTU data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
 #' @param q a numerical vector specifying the diversity orders. Default is c(0, 1, 2).
-#' @param level A numerical vector specifying the particular value of sample coverage (between 0 and 1). \code{level = 1} means complete coverage (the corresponding UniFrac represents asymptotic UniFrac).\cr
+#' @param level A numerical vector specifying the particular value of sample coverage (between 0 and 1). \code{level = 1} means complete coverage (the corresponding UniFrac represents asymptotic UniFrac distance).\cr
 #' If \code{level = NULL}, this function computes the gamma and alpha diversity estimates up to one (for \code{q>0}) or up to the coverage of double the reference sample size (for \code{q = 0});
-#' the corresponding beta diversity and UniFrac is computed up to the same maximum coverage as the alpha diversity.
+#' the corresponding beta diversity and UniFrac distance is computed up to the same maximum coverage as the alpha diversity.
 #' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{10}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param PDtree a phylogenetic tree in Newick format for all observed species in the pooled assemblage.
@@ -28,27 +28,36 @@
 #' @import tibble
 #' @import iNEXT.beta3D
 #'
-#' @return a list of two data frames with two types dissimilarity measure for UniFrac.
+#' @return a list of two data frames with two types dissimilarity measure for UniFrac distance.
 #'
 #' @examples
 #'
 #' data("tongue_cheek")
 #' data("tongue_cheek_tree")
-#' output <- iNEXTUniFrac(tongue_cheek, q=c(0,1,2), level = seq(0.5, 1, 0.05), nboot = 10, conf = 0.95, PDtree = tongue_cheek_tree, PDreftime = NULL)
+#' output <- iNEXTUniFrac(tongue_cheek, q=c(0,1,2),
+#'                        level = seq(0.5, 1, 0.05), nboot = 10,
+#'                        conf = 0.95, PDtree = tongue_cheek_tree, PDreftime = NULL)
 #'
 #' @export
 iNEXTUniFrac = function(data, q=c(0,1,2), level = NULL, nboot = 10, conf = 0.95, PDtree = NULL, PDreftime = NULL){
   out = iNEXTbeta3D(data, diversity = "PD", q=q, datatype = "abundance", level = level, nboot = nboot, conf = conf, PDtree = PDtree,  PDreftime = PDreftime)
 
   UniFrac_out = list()
-  if(is.list(data)){
+  if(class(data)=="list"){
     for(i in 1:length(data)){
       UniFrac_out[[i]] = list(C = out[[i]]$C, U = out[[i]]$U)
     }
+    if(is.NULL(names(data))){
+      names(UniFrac_out) = paste0("Region_", 1:length(data))
+    }else{
+      names(UniFrac_out) = names(data)
+    }
+
   }else{
     UniFrac_out[[1]] = list(C = out[[1]]$C, U = out[[1]]$U)
+    names(UniFrac_out) = "Region_1"
   }
-  names(UniFrac_out) = names(data)
+  UniFrac_out
 }
 
 # tongue_cheek %>% colnames()
