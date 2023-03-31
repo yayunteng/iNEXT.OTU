@@ -102,7 +102,7 @@ OTU count data can be input as a <code>matrix/data.frame</code> (species by asse
 </tr>
 <tr class="odd">
 <td align="center"><code>level</code></td>
-<td align="left">A numerical vector specifying the particular value of sample coverage (between 0 and 1 when <code>base = "coverage"</code>). <code>level = 1</code> (<code>base = "coverage"</code>) means complete coverage  \cr
+<td align="left">A numerical vector specifying the particular value of sample coverage (between 0 and 1). <code>level = 1</code> means complete coverage  \cr
 (the corresponding diversity represents asymptotic diversity). \cr
 If <code>level = NULL</code>, then this function computes UniFrac distance estimates up to one (for <code>q = 1, 2</code>) or up to the coverage of double the reference sample size (for <code>q = 0</code>).</td>
 
@@ -230,7 +230,7 @@ out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10,
 ggiNEXTUniFrac(out)
 ```
 
-```{r, fig.align='center', fig.height=6, fig.width=6}
+```{r, fig.align='center', fig.height=6, fig.width=6, echo=FALSE}
 ggiNEXTUniFrac(out)
 ```
 
