@@ -62,14 +62,6 @@ iNEXTUniFrac = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot
   #UniFrac_out
 }
 
-# tongue_cheek %>% colnames()
-# model1 <- data.frame(Cheek = tongue_cheek[,1],
-#                      Tongue = tongue_cheek[,31],
-#                      row.names = rownames(tongue_cheek))
-# model1 <- model1 %>% filter(Cheek>0 | Tongue>0)
-# model1 %>% dim
-# output <- iNEXTbeta3D(model1, diversity = "PD", q=c(0,1,2), level = seq(0.5, 1, 0.05), nboot = 0, conf = 0.95, PDtree = tree, PDreftime = NULL)
-
 #' ggplot2 extension for an iNEXT.UniFrac object
 #'
 #' \code{ggiNEXTUniFrac}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTUniFrac}} object to plot coverage-based rarefaction/extrapolation curves for UniFrac.
