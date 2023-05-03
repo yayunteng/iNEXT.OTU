@@ -24,8 +24,7 @@ library(iNEXT.UniFrac)
 
 `iNEXT.UniFrac` provides a new way to measure UniFrac distance, by applying dissimilarity measures based on Chiu's et al.'s multiple assemblages decomposition (Chiu, Jost, and Chao (2014)). And we mainly consider three measures of Hill numbers of order q: species richness (`q = 0`), Shannon diversity (`q = 1`, the exponential of Shannon entropy) and Simpson diversity (`q = 2`, the inverse of Simpson concentration).
 
-`iNEXT.UniFrac` uses the observed sample of OTU count data (called the "reference sample") 
-to calculate UniFrac distance estimates and the associated confidence intervals for coverage-based rarefaction and extrapolation (R/E) curve.
+`iNEXT.UniFrac` uses the observed sample of OTU count data (called the "reference sample") to calculate UniFrac distance estimates and the associated confidence intervals for coverage-based rarefaction and extrapolation (R/E) curve.
 
 `iNEXT.UniFrac` computes dissimilarity as UniFrac distance estimates by doing monotonic transformation on phylogenetic beta diversity for rarefied and extrapolated samples, based on standardized levels of sample completeness (measured by sample coverage). This coverage-based  sampling curve plots the diversity estimates with respect to sample coverage. 
 
@@ -68,13 +67,12 @@ Here are two main functions we provide in this package :
 We first describe the main function `iNEXTUniFrac()` with default arguments: 
 
 ```{r eval=FALSE}
-iNEXTUniFrac(data, q = c(0, 1, 2), level = NULL, nboot = 10, conf = 0.95,
-             PDtree = NULL, PDreftime = NULL)
+iNEXTUniFrac(data, q = c(0, 1, 2), base = "coverage", level = NULL, nboot = 10, 
+             conf = 0.95, PDtree = NULL, PDreftime = NULL)
 ```
 
 
-The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes UniFrac distance estimates of order q at specified sample coverage. By default of <code>level = NULL</code>, then this function computes estimates up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0).
-
+The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes gamma, alpha and beta diversity estimates of order q at specified sample coverage or sample size. By default of <code>base = "size"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to double the reference sample size in each region. If <code>base = "coverage"</code> and <code>level = NULL</code>, then this function computes the gamma, alpha, beta diversity, and four dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0).
 
 <table style="width:100%;">
 <colgroup>
@@ -99,30 +97,39 @@ OTU count data can be input as a <code>matrix/data.frame</code> (species by asse
 <td align="center"><code>q</code></td>
 <td align="left">a numerical vector specifying the diversity orders. Default is <code>c(0, 1, 2)</code>.</td>
 
+
 </tr>
 <tr class="odd">
-<td align="center"><code>level</code></td>
-<td align="left">A numerical vector specifying the particular value of sample coverage (between 0 and 1). <code>level = 1</code> means complete coverage  \cr
-(the corresponding diversity represents asymptotic diversity). \cr
-If <code>level = NULL</code>, then this function computes UniFrac distance estimates up to one (for <code>q = 1, 2</code>) or up to the coverage of double the reference sample size (for <code>q = 0</code>).</td>
+<td align="center"><code>base</code></td>
+<td align="left">Sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (<code>base = "size"</code>) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (<code>base = "coverage"</code>). Default is <code>base = "coverage"</code>.</td>
+
 
 </tr>
 <tr class="even">
+<td align="center"><code>level</code></td>
+<td align="left">A numerical vector specifying the particular value of sample coverage (between 0 and 1 when <code>base = "coverage"</code>) or sample size (<code>base = "size"</code>). <code>level = 1</code> (<code>base = "coverage"</code>) means complete coverage  \cr
+(the corresponding diversity represents asymptotic diversity). \cr
+If <code>base = "size"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to double the reference sample size.  \cr
+If <code>base = "coverage"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to one (for <code>q = 1, 2</code>) or up to the coverage of double the reference sample size (for <code>q = 0</code>); the corresponding beta diversity and dissimilarity are computed up to the same maximum coverage as the alpha diversity.</td>
+
+
+</tr>
+<tr class="odd">
 <td align="center"><code>nboot</code></td>
 <td align="left">a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter <code>0</code> to skip the bootstrap procedures. Default is <code>10</code>. Note that large bootstrap replication needs more run time.</td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center"><code>conf</code></td>
 <td align="left">a positive number < 1 specifying the level of confidence interval. Default is <code>0.95</code>.</td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="center"><code>PDtree</code></td>
 <td align="left">a <code>phylo</code>, a phylogenetic tree in Newick format for all observed species in the pooled assemblage.</td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center"><code>PDreftime</code></td>
 <td align="left"> a numerical value specifying reference time for PD. Default is <code>NULL</code> (i.e., the age of the root of PDtree).</td>
 
@@ -152,10 +159,20 @@ data("tongue_cheek")
 head(tongue_cheek, 10)
 ```
 
-The `iNEXTUniFrac()` function returns the `"iNEXTUniFrac"` object including two data frames for each regions: 
+When `base = 'coverage'`, the `iNEXTUniFrac()` function returns the `"iNEXTUniFrac"` object including seven data frames for each regions: 
 
-- C (for UniFrac distance measured by Sorensen-type dissimilarity)
-- U (for UniFrac distance measured by Jaccard-type dissimilarity)
+- gamma 
+- alpha 
+- beta
+- C (for UniFrac distance measured by Sorensen-type non-overlap )
+- U (for UniFrac distance measured by Jaccard-type  non-overlap )
+- V (for UniFrac distance measured by Sorensen-type turnover )
+- S (for UniFrac distance measured by Jaccard-type  turnover )
+
+When `base = 'size'`, the `iNEXTUniFrac()` function returns the `"iNEXTUniFrac"` object including two data frames for each regions: 
+
+- gamma 
+- alpha 
 
 ## Rarefaction/Extrapolation Via Examples
 
@@ -167,12 +184,12 @@ data("tongue_cheek")
 data("tongue_cheek_tree")
 
 out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10, 
-                            PDtree = tongue_cheek_tree, PDreftime = NULL)
+                   PDtree = tongue_cheek_tree, PDreftime = NULL)
 ```
 
 ```{r echo=FALSE}
 out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10, 
-                            PDtree = tongue_cheek_tree, PDreftime = NULL)
+                   PDtree = tongue_cheek_tree, PDreftime = NULL)
 lapply(out$Region_1, function(x) {
     tmp = x[1:6,]
     tmp[,c('Estimate', 'Size', 's.e.', 'LCL', 'UCL')] = round(tmp[,c('Estimate', 'Size', 's.e.', 'LCL', 'UCL')], 3)
@@ -180,15 +197,14 @@ lapply(out$Region_1, function(x) {
 })
 ```
 
-The output contains two data frames: `C` for Sorensen-type, `U` for Jaccard-type. For each data frame, it includes the UniFrac distance estimate (`Estimate`), the diversity order (`Order.q`), `Method` (Interpolated, Observed, or Extrapolated, depending on whether the size `m` is less than, equal to, or greater than the reference sample size), the sample coverage estimate (`SC`), the sample size (`Size`), the standard error from bootstrap replications (`s.e.`), the 95% lower and upper confidence limits of diversity (`LCL`, `UCL`), and the name of region (`Region`). These UniFrac distance estimates with confidence intervals are used for plotting the R/E curve.
-
+The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`, `U`, `V`, `S`. For each data frame, it includes the diversity estimate (`Estimate`), the diversity order (`Order.q`), `Method` (Interpolated, Observed, or Extrapolated, depending on whether the size `m` is less than, equal to, or greater than the reference sample size), the sample coverage estimate (`SC`), the sample size (`Size`), the standard error from bootstrap replications (`s.e.`), the 95% lower and upper confidence limits of diversity (`LCL`, `UCL`), and the name of region (`Region`). These diversity estimates with confidence intervals are used for plotting the diversity curve.
 
 ## GRAPHIC DISPLAYS: FUNCTION ggiNEXTUniFrac()
 
 The function `ggiNEXTUniFrac()`, which extends `ggplot2` to the `"iNEXTUniFrac"` object with default arguments, is described as follows: 
 
 ```{r eval=FALSE}
-ggiNEXTUniFrac(output, scale = "fixed", transp = 0.4)  
+ggiNEXTUniFrac(output, type = "B", scale = "fixed", transp = 0.4)  
 ```
 
 <table style="width:100%;">
@@ -209,11 +225,17 @@ ggiNEXTUniFrac(output, scale = "fixed", transp = 0.4)
 
 </tr>
 <tr class="even">
+<td align="center"><code>type</code></td>
+<td align="left">selection of plot type : type = 'B' for plotting the gamma, alpha, and beta diversity; type = 'D' for plotting 4 dissimilarities.</td>
+
+
+</tr>
+<tr class="odd">
 <td align="center"><code>scale</code></td>
 <td align="left">Are scales shared across all facets (the default, <code>"fixed"</code>), or do they vary across rows (<code>"free_x"</code>), columns (<code>"free_y"</code>), or both rows and columns (<code>"free"</code>)?</td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center"><code>transp</code></td>
 <td align="left">a value between 0 and 1 controlling transparency. <code>transp = 0</code> is completely transparent, default is <code>0.4</code>.</td>
 
@@ -222,17 +244,31 @@ ggiNEXTUniFrac(output, scale = "fixed", transp = 0.4)
 </table>
 
 
-The `ggiNEXTUniFrac()` function is a wrapper around the `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so it can be manipulated using the `ggplot2` tools.
+The `ggiNEXTUniFrac()` function is a wrapper around the `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so it can be manipulated using the `ggplot2` tools. Users can visualize the output of beta diversity or four dissimilarities by setting the parameter <code>**type**</code>:
 
 ```{r eval=FALSE}
 out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), nboot = 10, 
                    PDtree = tongue_cheek_tree, PDreftime = NULL)
-ggiNEXTUniFrac(out)
+ggiNEXTUniFrac(out, type = "B")
 ```
 
 ```{r, fig.align='center', fig.height=6, fig.width=6, echo=FALSE}
+ggiNEXTUniFrac(out, type = "B")
+```
+
+```{r, fig.align='center', fig.height=8, fig.width=6}
+ggiNEXTUniFrac(out, type = "D")
+```
+
+
+The following commands return the size-based R/E sampling curves for gamma and alpha diversity:
+
+```{r, fig.align='center', fig.height=4, fig.width=6}
+out = iNEXTUniFrac(data = tongue_cheek, q = c(0, 1, 2), base = "size", 
+                   nboot = 10, PDtree = tongue_cheek_tree, PDreftime = NULL)
 ggiNEXTUniFrac(out)
 ```
+
 
 ## References
 - Chiu, C.-H., Jost, L. and Chao*, A. (2014). Phylogenetic beta diversity, similarity, and differentiation measures based on Hill numbers. Ecological Monographs 84, 21-44.
