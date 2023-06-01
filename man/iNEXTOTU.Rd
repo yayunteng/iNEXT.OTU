@@ -2,7 +2,7 @@
 % Please edit documentation in R/MainFun.R
 \name{iNEXTOTU}
 \alias{iNEXTOTU}
-\title{function to calculate UniFrac distance based on dissimilarity measure}
+\title{function to calculate phylogenetic gamma, alpha, beta diversity and dissimilarity measure}
 \usage{
 iNEXTOTU(
   data,
@@ -20,7 +20,7 @@ iNEXTOTU(
 
 \item{q}{a numerical vector specifying the diversity orders. Default is c(0, 1, 2).}
 
-\item{base}{Sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (\code{base = "coverage"}). Default is \code{base = "coverage"}.}
+\item{base}{sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (\code{base = "coverage"}). Default is \code{base = "coverage"}.}
 
 \item{level}{A numerical vector specifying the particular value of sample coverage (between 0 and 1 when \code{base = "coverage"}) or sample size (\code{base = "size"}). \code{level = 1} (\code{base = "coverage"}) means complete coverage (the corresponding diversity represents asymptotic diversity).\cr
 If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. \cr
@@ -36,10 +36,10 @@ the corresponding beta diversity is computed up to the same maximum coverage as 
 \item{PDreftime}{a numerical value specifying reference time for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).}
 }
 \value{
-If \code{base = "coverage"}, return a list of seven data frames with three coverage-based diversity (gamma, alpha, and beta) and four types dissimilarity measure for UniFrac distance. If \code{base = "size"}, return a list of two data frames with two diversity (gamma and alpha).
+If \code{base = "coverage"}, return a list of seven data frames with three coverage-based diversity (gamma, alpha, and beta) and four types dissimilarity measure. If \code{base = "size"}, return a list of two data frames with two diversity (gamma and alpha).
 }
 \description{
-\code{iNEXTOTU}: function to calculate UniFrac distance based on Sørensen- and Jaccard-type dissimilarity measure
+\code{iNEXTOTU}: function to calculate interpolation and extrapolation for phylogenetic gamma, alpha, beta diversity and dissimilarity measure
 }
 \examples{
 

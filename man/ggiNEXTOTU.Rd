@@ -2,7 +2,7 @@
 % Please edit documentation in R/MainFun.R
 \name{ggiNEXTOTU}
 \alias{ggiNEXTOTU}
-\title{ggplot2 extension for an iNEXT.UniFrac object}
+\title{ggplot2 extension for an iNEXT.OTU object}
 \usage{
 ggiNEXTOTU(output, type = "B", scale = "fixed", transp = 0.4)
 }
@@ -18,10 +18,10 @@ ggiNEXTOTU(output, type = "B", scale = "fixed", transp = 0.4)
 \item{transp}{a value between 0 and 1 for controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.}
 }
 \value{
-a figure for two types of UniFrac based on dissimilarity measure.
+a figure for phylogenetic diversity decomposition or dissimilarity measure.
 }
 \description{
-\code{ggiNEXTOTU}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTOTU}} object to plot coverage-based rarefaction/extrapolation curves for UniFrac.
+\code{ggiNEXTOTU}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTOTU}} object to plot coverage- or sample-sized-based rarefaction/extrapolation curves for phylogenetic diversity decomposition and dissimilarity measure.
 }
 \examples{
 

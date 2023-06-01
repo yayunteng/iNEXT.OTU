@@ -1,10 +1,10 @@
-#' function to calculate UniFrac distance based on dissimilarity measure
+#' function to calculate phylogenetic gamma, alpha, beta diversity and dissimilarity measure
 #'
-#' \code{iNEXTOTU}: function to calculate UniFrac distance based on Sørensen- and Jaccard-type dissimilarity measure
+#' \code{iNEXTOTU}: function to calculate interpolation and extrapolation for phylogenetic gamma, alpha, beta diversity and dissimilarity measure
 #'
 #' @param data OTU data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
 #' @param q a numerical vector specifying the diversity orders. Default is c(0, 1, 2).
-#' @param base Sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (\code{base = "coverage"}). Default is \code{base = "coverage"}.
+#' @param base sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (\code{base = "coverage"}). Default is \code{base = "coverage"}.
 #' @param level A numerical vector specifying the particular value of sample coverage (between 0 and 1 when \code{base = "coverage"}) or sample size (\code{base = "size"}). \code{level = 1} (\code{base = "coverage"}) means complete coverage (the corresponding diversity represents asymptotic diversity).\cr
 #' If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. \cr
 #' If \code{base = "coverage"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size (for \code{q = 0});
@@ -29,8 +29,9 @@
 #' @import tidyr
 #' @import tibble
 #' @import iNEXT.beta3D
+#' @import hiDIP
 #'
-#' @return If \code{base = "coverage"}, return a list of seven data frames with three coverage-based diversity (gamma, alpha, and beta) and four types dissimilarity measure for UniFrac distance. If \code{base = "size"}, return a list of two data frames with two diversity (gamma and alpha).
+#' @return If \code{base = "coverage"}, return a list of seven data frames with three coverage-based diversity (gamma, alpha, and beta) and four types dissimilarity measure. If \code{base = "size"}, return a list of two data frames with two diversity (gamma and alpha).
 #'
 #' @examples
 #'
@@ -62,9 +63,9 @@ iNEXTOTU = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot = 1
   #UniFrac_out
 }
 
-#' ggplot2 extension for an iNEXT.UniFrac object
+#' ggplot2 extension for an iNEXT.OTU object
 #'
-#' \code{ggiNEXTOTU}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTOTU}} object to plot coverage-based rarefaction/extrapolation curves for UniFrac.
+#' \code{ggiNEXTOTU}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTOTU}} object to plot coverage- or sample-sized-based rarefaction/extrapolation curves for phylogenetic diversity decomposition and dissimilarity measure.
 #'
 #' @param output the output from iNEXTOTU
 #' @param type (required only when \code{base = "coverage"}), selection of plot type : \cr
@@ -73,7 +74,7 @@ iNEXTOTU = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot = 1
 #' @param scale Are scales shared across all facets (the default, \code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})?
 #' @param transp a value between 0 and 1 for controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #'
-#' @return a figure for two types of UniFrac based on dissimilarity measure.
+#' @return a figure for phylogenetic diversity decomposition or dissimilarity measure.
 #'
 #' @examples
 #'
@@ -135,3 +136,61 @@ ggiNEXTOTU = function(output, type = "B", scale = "fixed", transp = 0.4){
   #     labs(x = 'Sample coverage', y = ylab)
 }
 
+
+#' function to calculate hierarchical phylogenetic gamma, alpha, beta diversity and dissimilarity measure
+#'
+#' \code{hierPD}: function to calculate empirical estimates for hierarchical phylogenetic gamma, alpha, beta diversity and dissimilarity measure
+#'
+#' @param data data should be input as a \code{matrix/data.frame} (species by assemblages).
+#' @param mat hierarchical structure of data should be input as a \code{matrix}.
+#' @param tree a phylogenetic tree in Newick format for all observed species in the pooled assemblage.
+#' @param q a numerical vector specifying the diversity orders. Default is \code{seq(0, 2, 0.2)}.
+#' @param weight weight for relative decomposition. Default is \code{"size"}.
+#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{20}.
+#' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
+#' @param type estimate type: estimate \code{(type = "est")}, empirical estimate \code{(type = "mle")}. Default is \code{"mle"}.
+#' @param decomposition relative decomposition: \code{(decomposition = "relative")}, Absolute decomposition: \code{(decomposition = "absolute")}.
+#'
+#' @return a data frames with hierarchical phylogenetic diversity (gamma, alpha, and beta) and four types dissimilarity measure.
+#'
+#' @examples
+#'
+#' data("antechinus")
+#' data("antechinus_mat")
+#' data("antechinus_tree")
+#' hier_output <- hierPD(antechinus, mat = antechinus_mat, tree = antechinus_tree, q = seq(0, 2, 0.2))
+#'
+#' @export
+hierPD <- function(data, mat, tree, q = seq(0, 2, 0.2), weight = "size", nboot = 20,
+                   conf = 0.95, type = "mle", decomposition = "relative"){
+  hier_method = c("qPD", "1-C", "1-U", "1-V", "1-S")
+  out = hier.phylogeny(data, mat, tree, q = q, weight = weight, nboot = nboot,
+                 conf = conf, type = type, decomposition = decomposition)
+  out[str_sub(out$Method, 1, 3)%in%hier_method, ]
+}
+
+
+#' ggplot2 extension for an hierPD object
+#'
+#' \code{gghierPD}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{hierPD}} object to plot order q against to hierarchical phylogenetic diversity decomposition and dissimilarity measure.
+#'
+#' @param output the output from hierPD.
+#' @param method \code{(method = "A")} diversity(alpha, gamma); \code{(method = "B")} beta diversity; \code{(method = "D")} dissimilarity measure based on multiplicative decomposition.
+#'
+#' @return a figure for hierarchical phylogenetic diversity decomposition or dissimilarity measure.
+#'
+#' @examples
+#'
+#' data("antechinus")
+#' data("antechinus_mat")
+#' data("antechinus_tree")
+#' hier_output <- hierPD(antechinus, mat = antechinus_mat, tree = antechinus_tree, q = seq(0, 2, 0.2))
+#' gghierPD(hier_output, method = "A")
+#'
+#' @export
+gghierPD = function(output, method = "A"){
+  m = ifelse(method=="A", 4,
+             ifelse(method=="B", 5,
+                    ifelse(method=="D", 6, NA)))
+  gghier_phylogeny(output, method = m)
+}
