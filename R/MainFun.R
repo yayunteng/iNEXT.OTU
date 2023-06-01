@@ -1,6 +1,6 @@
 #' function to calculate UniFrac distance based on dissimilarity measure
 #'
-#' \code{iNEXTUniFrac}: function to calculate UniFrac distance based on Sørensen- and Jaccard-type dissimilarity measure
+#' \code{iNEXTOTU}: function to calculate UniFrac distance based on Sørensen- and Jaccard-type dissimilarity measure
 #'
 #' @param data OTU data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
 #' @param q a numerical vector specifying the diversity orders. Default is c(0, 1, 2).
@@ -36,12 +36,12 @@
 #'
 #' data("tongue_cheek")
 #' data("tongue_cheek_tree")
-#' output <- iNEXTUniFrac(tongue_cheek, q=c(0,1,2),
+#' output <- iNEXTOTU(tongue_cheek, q=c(0,1,2),
 #'                        level = seq(0.5, 1, 0.05), nboot = 10,
 #'                        conf = 0.95, PDtree = tongue_cheek_tree, PDreftime = NULL)
 #'
 #' @export
-iNEXTUniFrac = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot = 10, conf = 0.95, PDtree = NULL, PDreftime = NULL){
+iNEXTOTU = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot = 10, conf = 0.95, PDtree = NULL, PDreftime = NULL){
   out = iNEXTbeta3D(data, diversity = "PD", q=q, datatype = "abundance", base = base, level = level, nboot = nboot, conf = conf, PDtree = PDtree,  PDreftime = PDreftime)
   out
   # UniFrac_out = list()
@@ -64,9 +64,9 @@ iNEXTUniFrac = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot
 
 #' ggplot2 extension for an iNEXT.UniFrac object
 #'
-#' \code{ggiNEXTUniFrac}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTUniFrac}} object to plot coverage-based rarefaction/extrapolation curves for UniFrac.
+#' \code{ggiNEXTOTU}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTOTU}} object to plot coverage-based rarefaction/extrapolation curves for UniFrac.
 #'
-#' @param output the output from iNEXTUniFrac
+#' @param output the output from iNEXTOTU
 #' @param type (required only when \code{base = "coverage"}), selection of plot type : \cr
 #' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 #' \code{type = 'D'} for plotting 4 turnover dissimilarities.
@@ -79,11 +79,11 @@ iNEXTUniFrac = function(data, q=c(0,1,2), base = "coverage", level = NULL, nboot
 #'
 #' data("tongue_cheek")
 #' data("tongue_cheek_tree")
-#' output <- iNEXTUniFrac(tongue_cheek, q=c(0,1,2), nboot = 0, PDtree = tongue_cheek_tree)
-#' ggiNEXTUniFrac(output, scale = 'free', transp = 0.4)
+#' output <- iNEXTOTU(tongue_cheek, q=c(0,1,2), nboot = 0, PDtree = tongue_cheek_tree)
+#' ggiNEXTOTU(output, scale = 'free', transp = 0.4)
 #'
 #' @export
-ggiNEXTUniFrac = function(output, type = "B", scale = "fixed", transp = 0.4){
+ggiNEXTOTU = function(output, type = "B", scale = "fixed", transp = 0.4){
   ggiNEXTbeta3D(output, type = type, scale = scale, transp = transp)
 
   # cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", "#330066", "#CC79A7", "#0072B2", "#D55E00"))

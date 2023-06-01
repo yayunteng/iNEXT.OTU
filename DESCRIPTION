@@ -1,10 +1,10 @@
-Package: iNEXT.UniFrac
+Package: iNEXT.OTU
 Type: Package
 Title: Interpolation and Extrapolation for UniFrac based on dissimilarity measure
 Version: 0.1.0
 Author: YaYun Teng
 Maintainer: YaYun Teng <jewel860911@gmail.com>
-Description: iNEXT.UniFrac provides the function to calculate UniFrac for multiple assemblages.
+Description: iNEXT.OTU provides the function to calculate UniFrac for multiple assemblages.
 Depends: R (>= 4.0)
 Imports: tidyverse,
          magrittr,
